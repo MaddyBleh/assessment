@@ -1,4 +1,5 @@
-﻿<Window x:Class="assessment.MainWindow"
+﻿<!--Created by Maddy.-->
+<Window x:Class="assessment.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -25,11 +26,11 @@
                     <TextBox x:Name="tbxPrice" HorizontalAlignment="Left" Height="34" Margin="162,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235"/>
 
                     <!--Listbox for items-->
-                    <ListBox x:Name="lbxInventorySP" HorizontalAlignment="Left" Height="264" Margin="445,20,0,0" VerticalAlignment="Top" Width="318" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <ListBox x:Name="lbxInventorySP" HorizontalAlignment="Left" Height="264" Margin="445,20,0,0" VerticalAlignment="Top" Width="318"/>
 
                     <!--Buttons-->
                     <Button x:Name="btnAddInventory" Content="Add to Inventory" HorizontalAlignment="Left" Height="33" Margin="19,325,0,0" VerticalAlignment="Top" Width="378" FontSize="20" Click="btnAddInventory_Click"/>
-                    <Button x:Name="btnClearInv" Content="Clear List" HorizontalAlignment="Left" Height="33" Margin="445,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20"/>
+                    <Button x:Name="btnClearInv" Content="Clear List" HorizontalAlignment="Left" Height="33" Margin="445,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20" Click="btnClearInv_Click"/>
                     <Button x:Name="btnSave" Content="Save File" HorizontalAlignment="Left" Height="33" Margin="554,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20"/>
                     <Button x:Name="btnLoad" Content="Load File" HorizontalAlignment="Left" Height="33" Margin="663,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20"/>
                 </Grid>
@@ -49,7 +50,7 @@
                     <TextBox x:Name="tbxSearch" HorizontalAlignment="Left" Height="33" Margin="191,20,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="176" FontSize="17"/>
 
                     <!--Listboxes-->
-                    <ListBox x:Name="tbxInventoryCust" HorizontalAlignment="Left" Height="243" Margin="19,58,0,0" VerticalAlignment="Top" Width="476" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <ListBox x:Name="lbxInventoryCust" HorizontalAlignment="Left" Height="243" Margin="19,58,0,0" VerticalAlignment="Top" Width="476" d:ItemsSource="{d:SampleData ItemCount=5}"/>
                     <ListBox x:Name="lbxCart" HorizontalAlignment="Left" Height="243" Margin="516,58,0,0" VerticalAlignment="Top" Width="129" d:ItemsSource="{d:SampleData ItemCount=5}"/>
 
                     <!--Buttons-->
@@ -68,16 +69,18 @@
                     <Label x:Name="lblPhoneNum" Content="Phone Number" HorizontalAlignment="Left" Height="33" Margin="19,97,0,0" VerticalAlignment="Top" Width="164" FontSize="17"/>
                     <Label x:Name="lblEmail" Content="Email" HorizontalAlignment="Left" Height="33" Margin="19,174,0,0" VerticalAlignment="Top" Width="164" FontSize="17"/>
                     <Label x:Name="lblAddress" Content="Address" HorizontalAlignment="Left" Height="33" Margin="19,251,0,0" VerticalAlignment="Top" Width="164" FontSize="17"/>
+
                     <!--TextBoxes-->
-                    <TextBox x:Name="tbxName1" HorizontalAlignment="Left" Margin="183,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
+                    <TextBox x:Name="tbxNameCust" HorizontalAlignment="Left" Margin="183,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
                     <TextBox x:Name="tbxPhoneNum" HorizontalAlignment="Left" Margin="183,97,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
                     <TextBox x:Name="tbxEmail" HorizontalAlignment="Left" Margin="183,174,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
                     <TextBox x:Name="tbxAddress" HorizontalAlignment="Left" Margin="183,251,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
+
+                    <!--Buttons-->
                     <Button x:Name="btnCheckout" Content="Checkout" HorizontalAlignment="Left" Margin="19,321,0,0" VerticalAlignment="Top" Height="43" Width="364" FontSize="20"/>
 
                 </Grid>
             </TabItem>
         </TabControl>
-
     </Grid>
 </Window>
