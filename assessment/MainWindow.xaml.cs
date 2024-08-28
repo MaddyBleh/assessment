@@ -26,7 +26,7 @@ namespace assessment
         }
 
         // Create empty list of all inventory items
-        public List<Dictionary<string,dynamic>> inventory = new List<Dictionary<string, dynamic>>(); // Background list for item information
+        public List<Dictionary<string, dynamic>> inventory = new List<Dictionary<string, dynamic>>(); // Background list for item information
 
         // TextBox validation - if empty, return true, else return false
         public bool isTbxEmpty(List<TextBox> checklist) // Takes a list of textbox objects as input
@@ -40,6 +40,18 @@ namespace assessment
                 }
             }
             return empty;
+        }
+
+        public void populateListbox(ListBox list)
+        {
+            list.Items.Clear();
+            if (inventory.Count > 0) {
+                foreach (var dict in inventory)
+                {
+                    list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: {dict["Price"]:N2}"); // Price is 2dp
+                }
+            }
+
         }
 
         // Add item to inventory
@@ -68,26 +80,53 @@ namespace assessment
             // If everything is correct, add to lbxInventorySP
             if (valid)
             {
-                lbxInventorySP.Items.Add($"ID: {tbxProductID.Text}, Name: {tbxName.Text}, Quantity: {tbxQuantity.Text}, Price: ${tbxPrice.Text}");
-
-                // Also add to background list for editting later.
+                // Add to background list for editting later.
                 inventory.Add(new Dictionary<string, dynamic>());
-                inventory[(lbxInventorySP.Items.Count) - 1].Add("ID", tbxProductID.Text);                   // Add ID
-                inventory[(lbxInventorySP.Items.Count) - 1].Add("Name", tbxName.Text);                      // Add Name
-                inventory[(lbxInventorySP.Items.Count) - 1].Add("Quantity", int.Parse(tbxQuantity.Text));   // Add Quantity
-                inventory[(lbxInventorySP.Items.Count) - 1].Add("Price", double.Parse(tbxPrice.Text));      // Add Price
+                inventory[lbxInventorySP.Items.Count].Add("DictID", Guid.NewGuid().ToString());       // Unique ID to dictionary. Easier deleting.
+                inventory[lbxInventorySP.Items.Count].Add("ID", tbxProductID.Text);                   // Add ID
+                inventory[lbxInventorySP.Items.Count].Add("Name", tbxName.Text);                      // Add Name
+                inventory[lbxInventorySP.Items.Count].Add("Quantity", int.Parse(tbxQuantity.Text));   // Add Quantity
+                inventory[lbxInventorySP.Items.Count].Add("Price", double.Parse(tbxPrice.Text));      // Add Price
+
+                // Add to listbox
+                populateListbox(lbxInventorySP);
 
                 // Print all saved information - debugging.
-                foreach (var dict in inventory) { 
-                    foreach (var keyValue in dict)
-                        Trace.Write($"{keyValue.Key}: {keyValue.Value} ");
-                    Trace.WriteLine("");
-                }
+                //foreach (var dict in inventory) {
+                //    foreach (var keyValue in dict)
+                //        Trace.Write($"{keyValue.Key}: {keyValue.Value} ");
+                //    Trace.WriteLine("");
+                //}
+
+                // print size of inventory, debug
+                Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
             }
         }
         private void btnClearInv_Click(object sender, RoutedEventArgs e)
         {
+            int selectedIndex = lbxInventorySP.SelectedIndex;
+            if (selectedIndex != -1)
+            {
+                var dictSelected = inventory[selectedIndex];
+                var dictID = dictSelected["DictID"].ToString();
 
-        }
+                for (int i = 0; i < inventory.Count; i++)
+                {
+                    if (inventory[i]["DictID"]  == dictID)
+                    {
+                        inventory.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {
+                inventory.Clear();
+            }
+            populateListbox(lbxInventorySP);
+
+            // print size of inventory, debug
+            Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
+
+        } 
     }
 }
