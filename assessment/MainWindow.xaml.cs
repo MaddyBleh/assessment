@@ -34,7 +34,8 @@ namespace assessment
             bool empty = false;
             for (int i = 0; i < checklist.Count; i++)
             {
-                if (string.IsNullOrEmpty(checklist[i].Text.Trim())) // Remove 
+                // Remove leading and trailing white spaces. Stops strings only consisting of spaces from being skipped.
+                if (string.IsNullOrEmpty(checklist[i].Text.Trim()))
                 {
                     empty = true;
                 }
@@ -42,19 +43,26 @@ namespace assessment
             return empty;
         }
 
+        // Fill listboxes
         public void populateListbox(ListBox list)
         {
+            // Refresh
             list.Items.Clear();
+
+            // If there is 1 or more item in inventory
             if (inventory.Count > 0) {
+
+                // Loop through each item in inventory
                 foreach (var dict in inventory)
                 {
+                    // Display in listbox
                     list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: {dict["Price"]:N2}"); // Price is 2dp
                 }
             }
 
         }
 
-        // Add item to inventory
+        // Add item to inventory - sales page
         private void btnAddInventory_Click(object sender, RoutedEventArgs e)
         {
             bool valid = true;
@@ -83,8 +91,8 @@ namespace assessment
                 // Add to background list for editting later.
                 inventory.Add(new Dictionary<string, dynamic>());
                 inventory[lbxInventorySP.Items.Count].Add("DictID", Guid.NewGuid().ToString());       // Unique ID to dictionary. Easier deleting.
-                inventory[lbxInventorySP.Items.Count].Add("ID", tbxProductID.Text);                   // Add ID
-                inventory[lbxInventorySP.Items.Count].Add("Name", tbxName.Text);                      // Add Name
+                inventory[lbxInventorySP.Items.Count].Add("ID", tbxProductID.Text.Trim());            // Add ID, remove extra spaces
+                inventory[lbxInventorySP.Items.Count].Add("Name", tbxName.Text.Trim());               // Add Name, remove extra spaces
                 inventory[lbxInventorySP.Items.Count].Add("Quantity", int.Parse(tbxQuantity.Text));   // Add Quantity
                 inventory[lbxInventorySP.Items.Count].Add("Price", double.Parse(tbxPrice.Text));      // Add Price
 
@@ -92,36 +100,49 @@ namespace assessment
                 populateListbox(lbxInventorySP);
 
                 // Print all saved information - debugging.
-                //foreach (var dict in inventory) {
-                //    foreach (var keyValue in dict)
-                //        Trace.Write($"{keyValue.Key}: {keyValue.Value} ");
-                //    Trace.WriteLine("");
-                //}
+                foreach (var dict in inventory)
+                {
+                    foreach (var keyValue in dict)
+                        Trace.Write($"{keyValue.Key}: {keyValue.Value} ");
+                    Trace.WriteLine("");
+                }
 
                 // print size of inventory, debug
                 Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
             }
         }
+
+        // Clear inventory - sales page
         private void btnClearInv_Click(object sender, RoutedEventArgs e)
         {
+            // Find selected item
             int selectedIndex = lbxInventorySP.SelectedIndex;
+
+            // If no item is seleted
             if (selectedIndex != -1)
             {
+                // Match selected item with corresponding dictionary
                 var dictSelected = inventory[selectedIndex];
                 var dictID = dictSelected["DictID"].ToString();
 
+                // Look through every inventory item
                 for (int i = 0; i < inventory.Count; i++)
                 {
+                    // Make sure that the correct dictionary has been located
                     if (inventory[i]["DictID"]  == dictID)
                     {
+                        // Delete from inventory list
                         inventory.RemoveAt(i);
                     }
                 }
             }
+            // If nothing is selected
             else
             {
+                // Clear all items from inventory list
                 inventory.Clear();
             }
+            // Update listbox
             populateListbox(lbxInventorySP);
 
             // print size of inventory, debug
