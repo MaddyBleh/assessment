@@ -56,11 +56,23 @@ namespace assessment
                 foreach (var dict in inventory)
                 {
                     // Display in listbox
-                    list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: {dict["Price"]:N2}"); // Price is 2dp
+                    list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: ${dict["Price"]:N2}"); // Price is 2dp
                 }
             }
 
         }
+
+        public void updateItem(ListBox list, List<TextBox> textbox)
+        {
+            int selectedIndex = lbxInventorySP.SelectedIndex;
+            if (list.SelectedIndex != -1) {
+                var selectedDict = inventory[selectedIndex];
+                textbox[0].Text = selectedDict["ID"];
+                textbox[1].Text = selectedDict["Name"];
+                textbox[2].Text = selectedDict["Quantity"].ToString();
+                textbox[3].Text = selectedDict["Price"].ToString();
+            }
+        } 
 
         // Add item to inventory - sales page
         private void btnAddInventory_Click(object sender, RoutedEventArgs e)
@@ -81,7 +93,7 @@ namespace assessment
                 try { Convert.ToInt32(tbxQuantity.Text); Convert.ToDouble(tbxPrice.Text); }
                 catch
                 {
-                    MessageBox.Show("Please make sure that both Quantity and Price only contain numbers.\nQuanity must be a whole number, while Price can be a decimal.", "Failed to add item - number error.");
+                    MessageBox.Show("Please make sure that both Quantity and Price only contain numbers.\nQuanity must be a whole number, while Price can be a decimal.", "Failed to add item - Invalid data type");
                     valid = false;
                 }
             }
@@ -148,6 +160,11 @@ namespace assessment
             // print size of inventory, debug
             Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
 
-        } 
+        }
+
+        private void lbxInventorySP_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            updateItem(lbxInventorySP, [tbxProductID, tbxName, tbxQuantity, tbxPrice]);
+        }
     }
 }

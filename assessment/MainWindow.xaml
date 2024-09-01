@@ -26,7 +26,7 @@
                     <TextBox x:Name="tbxPrice" HorizontalAlignment="Left" Height="34" Margin="162,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235"/>
 
                     <!--Listbox for items-->
-                    <ListBox x:Name="lbxInventorySP" HorizontalAlignment="Left" Height="264" Margin="445,20,0,0" VerticalAlignment="Top" Width="318"/>
+                    <ListBox x:Name="lbxInventorySP" HorizontalAlignment="Left" Height="264" Margin="445,20,0,0" VerticalAlignment="Top" Width="318" SelectionChanged="lbxInventorySP_SelectionChanged"/>
 
                     <!--Buttons-->
                     <Button x:Name="btnAddInventory" Content="Add to Inventory" HorizontalAlignment="Left" Height="33" Margin="19,325,0,0" VerticalAlignment="Top" Width="378" FontSize="20" Click="btnAddInventory_Click"/>
