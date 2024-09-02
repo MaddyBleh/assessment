@@ -206,12 +206,17 @@ namespace assessment
                 // Add to / update listbox
                 populateListbox(lbxInventorySP);
 
+                // Clear input boxes
+                tbxProductID.Clear();
+                tbxName.Clear();
+                tbxQuantity.Clear();
+                tbxPrice.Clear();
+
                 // Print all saved information - debugging.
                 foreach (var dict in inventory)
                 {
                     foreach (var keyValue in dict)
                         Trace.Write($"{keyValue.Key}: {keyValue.Value} ");
-                    Trace.Write("| ");
                     Trace.WriteLine("");
                 }
 
