@@ -20,10 +20,10 @@
                     <Label x:Name="lblPrice" Content="Price" HorizontalAlignment="Left" Height="34" Margin="19,251,0,0" VerticalAlignment="Top" Width="138" FontSize="18"/>
 
                     <!--Input Textboxes-->
-                    <TextBox x:Name="tbxProductID" HorizontalAlignment="Left" Height="33" Margin="162,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235"/>
-                    <TextBox x:Name="tbxName" HorizontalAlignment="Left" Height="33" Margin="162,97,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235"/>
-                    <TextBox x:Name="tbxQuantity" HorizontalAlignment="Left" Height="33" Margin="162,174,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235"/>
-                    <TextBox x:Name="tbxPrice" HorizontalAlignment="Left" Height="34" Margin="162,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235"/>
+                    <TextBox x:Name="tbxProductID" HorizontalAlignment="Left" Height="33" Margin="162,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235" FontSize="17"/>
+                    <TextBox x:Name="tbxName" HorizontalAlignment="Left" Height="33" Margin="162,97,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235" FontSize="17"/>
+                    <TextBox x:Name="tbxQuantity" HorizontalAlignment="Left" Height="33" Margin="162,174,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235" FontSize="17"/>
+                    <TextBox x:Name="tbxPrice" HorizontalAlignment="Left" Height="34" Margin="162,250,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="235" FontSize="17"/>
 
                     <!--Listbox for items-->
                     <ListBox x:Name="lbxInventorySP" HorizontalAlignment="Left" Height="264" Margin="445,20,0,0" VerticalAlignment="Top" Width="318" SelectionChanged="lbxInventorySP_SelectionChanged"/>

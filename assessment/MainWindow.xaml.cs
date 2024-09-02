@@ -102,7 +102,6 @@ namespace assessment
             {
                 // Add to background list for editting later.
                 inventory.Add(new Dictionary<string, dynamic>());
-                inventory[lbxInventorySP.Items.Count].Add("DictID", Guid.NewGuid().ToString());       // Unique ID to dictionary. Easier deleting.
                 inventory[lbxInventorySP.Items.Count].Add("ID", tbxProductID.Text.Trim());            // Add ID, remove extra spaces
                 inventory[lbxInventorySP.Items.Count].Add("Name", tbxName.Text.Trim());               // Add Name, remove extra spaces
                 inventory[lbxInventorySP.Items.Count].Add("Quantity", int.Parse(tbxQuantity.Text));   // Add Quantity
@@ -133,20 +132,7 @@ namespace assessment
             // If no item is seleted
             if (selectedIndex != -1)
             {
-                // Match selected item with corresponding dictionary
-                var dictSelected = inventory[selectedIndex];
-                var dictID = dictSelected["DictID"].ToString();
-
-                // Look through every inventory item
-                for (int i = 0; i < inventory.Count; i++)
-                {
-                    // Make sure that the correct dictionary has been located
-                    if (inventory[i]["DictID"]  == dictID)
-                    {
-                        // Delete from inventory list
-                        inventory.RemoveAt(i);
-                    }
-                }
+                inventory.RemoveAt(selectedIndex);
             }
             // If nothing is selected
             else
