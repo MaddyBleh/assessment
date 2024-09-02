@@ -59,9 +59,9 @@ namespace assessment
                     list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: ${dict["Price"]:N2}"); // Price is 2dp
                 }
             }
-
         }
 
+        // View selected item's details in textboxes.
         public void updateItem(ListBox list, List<TextBox> textbox)
         {
             int selectedIndex = lbxInventorySP.SelectedIndex;
@@ -100,14 +100,26 @@ namespace assessment
             // If everything is correct, add to lbxInventorySP
             if (valid)
             {
-                // Add to background list for editting later.
-                inventory.Add(new Dictionary<string, dynamic>());
-                inventory[lbxInventorySP.Items.Count].Add("ID", tbxProductID.Text.Trim());            // Add ID, remove extra spaces
-                inventory[lbxInventorySP.Items.Count].Add("Name", tbxName.Text.Trim());               // Add Name, remove extra spaces
-                inventory[lbxInventorySP.Items.Count].Add("Quantity", int.Parse(tbxQuantity.Text));   // Add Quantity
-                inventory[lbxInventorySP.Items.Count].Add("Price", double.Parse(tbxPrice.Text));      // Add Price
+                // If user has selected an item to update
+                if (lbxInventorySP.SelectedIndex != -1)
+                {
+                    var selection = inventory[lbxInventorySP.SelectedIndex];    // Get selected item to edit
+                    selection["ID"] = tbxProductID.Text.Trim();                 // Change ID
+                    selection["Name"] = tbxName.Text.Trim();                    // Change Name
+                    selection["Quantity"] = int.Parse(tbxQuantity.Text);        // Change Quantity
+                    selection["Price"] = double.Parse(tbxPrice.Text);           // Chaange Price
+                }
+                else
+                {
+                    // Add to background list for editting later.
+                    inventory.Add(new Dictionary<string, dynamic>());
+                    inventory[lbxInventorySP.Items.Count].Add("ID", tbxProductID.Text.Trim());            // Add ID, remove extra spaces
+                    inventory[lbxInventorySP.Items.Count].Add("Name", tbxName.Text.Trim());               // Add Name, remove extra spaces
+                    inventory[lbxInventorySP.Items.Count].Add("Quantity", int.Parse(tbxQuantity.Text));   // Add Quantity
+                    inventory[lbxInventorySP.Items.Count].Add("Price", double.Parse(tbxPrice.Text));      // Add Price
+                }
 
-                // Add to listbox
+                // Add to / update listbox
                 populateListbox(lbxInventorySP);
 
                 // Print all saved information - debugging.
@@ -129,9 +141,10 @@ namespace assessment
             // Find selected item
             int selectedIndex = lbxInventorySP.SelectedIndex;
 
-            // If no item is seleted
+            // If an item is seleted
             if (selectedIndex != -1)
             {
+                // Remove selected item
                 inventory.RemoveAt(selectedIndex);
             }
             // If nothing is selected
@@ -140,16 +153,18 @@ namespace assessment
                 // Clear all items from inventory list
                 inventory.Clear();
             }
+            
             // Update listbox
             populateListbox(lbxInventorySP);
 
             // print size of inventory, debug
             Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
-
         }
 
+        // Only exists to load selected item details into textboxes
         private void lbxInventorySP_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Takes the Inventory from Sales page, as well as the textboxes from the sales page
             updateItem(lbxInventorySP, [tbxProductID, tbxName, tbxQuantity, tbxPrice]);
         }
     }
