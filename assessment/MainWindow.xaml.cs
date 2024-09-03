@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Windows;
 using System.Windows.Automation;
@@ -157,6 +158,73 @@ namespace assessment
             }
         }
 
+        // Load from .csv file
+        public void loadCsvFile()
+        {
+            // Set up dialog box
+            OpenFileDialog loadfromcsv = new OpenFileDialog();
+            loadfromcsv.Title = "Load your file";
+            loadfromcsv.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+            loadfromcsv.FilterIndex = 0;
+
+            // If a dialog box appears
+            if (loadfromcsv.ShowDialog() == true)
+            {
+                // Get file name
+                string filePath = loadfromcsv.FileName;
+
+                try
+                {
+                    using (var reader = new StreamReader(filePath))
+                    {
+                        // Read headings
+                        string header = reader.ReadLine();
+                        var headers = header.Split(',');
+
+                        // If the file still has content
+                        while (!reader.EndOfStream)
+                        {
+                            // Read the line, and get each attribute (ID, Name, Quantity, Price)
+                            string line = reader.ReadLine();
+                            var details = line.Split(',');
+
+                            // Create item dictionary - will be added to inventory
+                            Dictionary<string, dynamic> item = new Dictionary<string, dynamic>();
+                            
+                            // This runs 4 times - one per header (ID, Name, Quantity, Price)
+                            for (int i = 0; i < headers.Length; i++)
+                            {
+                                // If in Quantity column, turn data into an int
+                                if (headers[i] == "Quantity")
+                                {
+                                    item.Add(headers[i], int.Parse(details[i]));
+                                }
+                                // If in Price column, turn data into a double
+                                else if (headers[i] == "Price")
+                                {
+                                    item.Add(headers[i], double.Parse(details[i]));
+                                }
+                                // If in ID or Name column, turn into string
+                                else
+                                {
+                                    item.Add(headers[i], details[i]);
+                                }
+                            }
+                            // Add the newly created item into inventory
+                            inventory.Add(item);
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show($"An error occured: {ex}");
+                    Trace.Write(ex.ToString());
+                }
+            }
+        }
+
         // Add item to inventory - sales page
         private void btnAddInventory_Click(object sender, RoutedEventArgs e)
         {
@@ -258,9 +326,17 @@ namespace assessment
             updateItem(lbxInventorySP, [tbxProductID, tbxName, tbxQuantity, tbxPrice]);
         }
 
+        // Save button
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             saveCsvFile();
+        }
+
+        // Load button
+        private void btnLoad_Click(object sender, RoutedEventArgs e)
+        {
+            loadCsvFile();
+            populateListbox(lbxInventorySP);
         }
     }
 }

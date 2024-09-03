@@ -32,7 +32,7 @@
                     <Button x:Name="btnAddInventory" Content="Add to Inventory" HorizontalAlignment="Left" Height="33" Margin="19,325,0,0" VerticalAlignment="Top" Width="378" FontSize="20" Click="btnAddInventory_Click"/>
                     <Button x:Name="btnClearInv" Content="Clear List" HorizontalAlignment="Left" Height="33" Margin="445,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20" Click="btnClearInv_Click"/>
                     <Button x:Name="btnSave" Content="Save File" HorizontalAlignment="Left" Height="33" Margin="554,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20" Click="btnSave_Click"/>
-                    <Button x:Name="btnLoad" Content="Load File" HorizontalAlignment="Left" Height="33" Margin="663,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20"/>
+                    <Button x:Name="btnLoad" Content="Load File" HorizontalAlignment="Left" Height="33" Margin="663,325,0,0" VerticalAlignment="Top" Width="100" FontSize="20" Click="btnLoad_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Customer">
