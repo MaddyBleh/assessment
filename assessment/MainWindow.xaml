@@ -47,7 +47,7 @@
                     <Label x:Name="lblCart" Content="Cart" HorizontalAlignment="Left" Margin="560,20,0,0" VerticalAlignment="Top" Width="40" Height="33" FontSize="17"/>
 
                     <!--Input Textbox-->
-                    <TextBox x:Name="tbxSearch" HorizontalAlignment="Left" Height="33" Margin="191,20,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="176" FontSize="17"/>
+                    <TextBox x:Name="tbxSearch" HorizontalAlignment="Left" Height="33" Margin="191,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="176" FontSize="17"/>
 
                     <!--Listboxes-->
                     <ListBox x:Name="lbxInventoryCust" HorizontalAlignment="Left" Height="243" Margin="19,58,0,0" VerticalAlignment="Top" Width="476" d:ItemsSource="{d:SampleData ItemCount=5}"/>
@@ -55,7 +55,7 @@
 
                     <!--Buttons-->
                     <Button x:Name="btnSearch" Content="Search" HorizontalAlignment="Left" Height="33" Margin="397,20,0,0" VerticalAlignment="Top" Width="98" FontSize="17"/>
-                    <Button x:Name="btnViewProducts" Content="View all Products" HorizontalAlignment="Left" Height="33" Margin="19,325,0,0" VerticalAlignment="Top" Width="230" FontSize="17"/>
+                    <Button x:Name="btnViewProducts" Content="View all Products" HorizontalAlignment="Left" Height="33" Margin="19,325,0,0" VerticalAlignment="Top" Width="230" FontSize="17" Click="btnViewProducts_Click"/>
                     <Button x:Name="btnAddCart" Content="Add Selection to Cart" HorizontalAlignment="Left" Height="33" Margin="265,325,0,0" VerticalAlignment="Top" Width="230" FontSize="17"/>
                     <Button x:Name="btnProceed" Content="Proceed to Checkout" HorizontalAlignment="Left" Height="33" Margin="516,325,0,0" VerticalAlignment="Top" Width="256" FontSize="17"/>
                     <Button x:Name="btnClearCart" Content="Remove Item" HorizontalAlignment="Left" Height="33" Margin="656,268,0,0" VerticalAlignment="Top" Width="116" FontSize="17"/>

@@ -338,5 +338,20 @@ namespace assessment
             loadCsvFile();
             populateListbox(lbxInventorySP);
         }
+
+        // CUSTOMER PAGE
+        // Let user see entire inventory
+        private void btnViewProducts_Click(object sender, RoutedEventArgs e)
+        {
+            // If the inventory has atleast 1 item.
+            if (inventory.Count > 0)
+            {
+                populateListbox(lbxInventoryCust);
+            }
+            else
+            {
+                MessageBox.Show("Inventory is currently empty, please load a list on the first page, or input items manually.", "Empty Inventory.");
+            }
+        }
     }
 }
