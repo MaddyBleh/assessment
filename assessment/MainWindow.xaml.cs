@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -44,6 +45,23 @@ namespace assessment
                 }
             }
             return empty;
+        }
+
+        // TextBox validation - if empty, return true, else return false
+        public bool doesTbxContainComma(List<TextBox> checklist) // Takes a list of textbox objects as input
+        {
+            bool comma = false;
+            string pattern = ","; // Find commas for regex
+            for (int i = 0; i < checklist.Count; i++)
+            {
+                // Remove leading and trailing white spaces. Stops strings only consisting of spaces from being skipped.
+                bool match = Regex.IsMatch(checklist[i].Text.Trim(), pattern);
+                if (match)
+                {
+                    comma = true;
+                }
+            }
+            return comma;
         }
 
         // Fill listboxes
@@ -190,7 +208,10 @@ namespace assessment
 
                             // Create item dictionary - will be added to inventory
                             Dictionary<string, dynamic> item = new Dictionary<string, dynamic>();
-                            
+                            if (details.Length != headers.Length) {
+                                Trace.WriteLine("Skipping invalid line.");
+                                continue;
+                            }
                             // This runs 4 times - one per header (ID, Name, Quantity, Price)
                             for (int i = 0; i < headers.Length; i++)
                             {
@@ -219,7 +240,7 @@ namespace assessment
                 catch (Exception ex)
                 {
 
-                    MessageBox.Show($"An error occured: {ex}");
+                    MessageBox.Show($"An error occured: Please make sure that your list is properly formatted. 4 attributes per line, with Quantity and Price being whole numbers and decimals respectively. No blank attributes are allowed as well.", "File format error.");
                     Trace.Write(ex.ToString());
                 }
             }
@@ -238,17 +259,22 @@ namespace assessment
                 valid = false;
             }
 
-            // Check if the empty box error message has occured
-            if (!emptyCheck)
+            // Do tbxQuanity and tbxPrice contain any letters? [a-zA-Z]
+            try { Convert.ToInt32(tbxQuantity.Text); Convert.ToDouble(tbxPrice.Text); }
+            catch
             {
-                // Do tbxQuanity and tbxPrice contain any letters? [a-zA-Z]
-                try { Convert.ToInt32(tbxQuantity.Text); Convert.ToDouble(tbxPrice.Text); }
-                catch
-                {
-                    MessageBox.Show("Please make sure that both Quantity and Price only contain numbers.\nQuanity must be a whole number, while Price can be a decimal.", "Failed to add item - Invalid data type");
-                    valid = false;
-                }
+                MessageBox.Show("Please make sure that both Quantity and Price only contain numbers.\nQuanity must be a whole number, while Price can be a decimal.", "Failed to add item - Invalid data type");
+                valid = false;
             }
+
+            // Do textboxes contain any commas?
+            bool commacheck = doesTbxContainComma([tbxProductID, tbxName, tbxQuantity, tbxPrice]);
+            if (commacheck)
+            {
+                MessageBox.Show("Please remove any commas from your textboxes.","Comma found in textbox.");
+                valid = false;
+            }
+
             // If everything is correct, add to lbxInventorySP
             if (valid)
             {
