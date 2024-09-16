@@ -65,17 +65,17 @@ namespace assessment
         }
 
         // Fill listboxes
-        public void populateListbox(ListBox list)
+        public void populateListbox(ListBox list, List<Dictionary<string,dynamic>> itemList)
         {
             // Refresh
             list.Items.Clear();
 
             // If there is 1 or more item in inventory
-            if (inventory.Count > 0)
+            if (itemList.Count > 0)
             {
 
                 // Loop through each item in inventory
-                foreach (var dict in inventory)
+                foreach (var dict in itemList)
                 {
                     // Display in listbox
                     list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: ${dict["Price"]:N2}"); // Price is 2dp
@@ -193,6 +193,7 @@ namespace assessment
 
                 try
                 {
+                    inventory.Clear();
                     using (var reader = new StreamReader(filePath))
                     {
                         // Read headings
@@ -235,6 +236,9 @@ namespace assessment
                             inventory.Add(item);
                         }
 
+                        // print size of inventory, debug
+                        Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
+
                     }
                 }
                 catch (Exception ex)
@@ -243,6 +247,18 @@ namespace assessment
                     MessageBox.Show($"An error occured: Please make sure that your list is properly formatted. 4 attributes per line, with Quantity and Price being whole numbers and decimals respectively. No blank attributes are allowed as well.", "File format error.");
                     Trace.Write(ex.ToString());
                 }
+            }
+        }
+
+        // Search for item on customer page
+        public static List<Dictionary<string, dynamic>> searchItem(List<Dictionary<string, dynamic>> list, string searchString)
+        {
+            return list.Where(itemInList).ToList();
+
+            bool itemInList(Dictionary<string, dynamic> dict)
+            {
+                string search = searchString.ToLower();
+                return dict.ContainsKey("Name") && dict["Name"].ToString().ToLower().Contains(search);
             }
         }
 
@@ -298,7 +314,7 @@ namespace assessment
                 }
 
                 // Add to / update listbox
-                populateListbox(lbxInventorySP);
+                populateListbox(lbxInventorySP, inventory);
 
                 // Clear input boxes
                 tbxProductID.Clear();
@@ -339,7 +355,7 @@ namespace assessment
             }
 
             // Update listbox
-            populateListbox(lbxInventorySP);
+            populateListbox(lbxInventorySP, inventory);
 
             // print size of inventory, debug
             Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
@@ -362,7 +378,7 @@ namespace assessment
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
             loadCsvFile();
-            populateListbox(lbxInventorySP);
+            populateListbox(lbxInventorySP, inventory);
         }
 
         // CUSTOMER PAGE
@@ -372,11 +388,34 @@ namespace assessment
             // If the inventory has atleast 1 item.
             if (inventory.Count > 0)
             {
-                populateListbox(lbxInventoryCust);
+                populateListbox(lbxInventoryCust, inventory);
             }
             else
             {
                 MessageBox.Show("Inventory is currently empty, please load a list on the first page, or input items manually.", "Empty Inventory.");
+            }
+        }
+
+        // Search for item - update box as input changes
+        private void tbxSearch_TextChanged(object sender, RoutedEventArgs e)
+        {
+            bool valid = true;
+            // if search is made empty, load all items.
+            if (isTbxEmpty([tbxSearch]))
+            {
+                populateListbox(lbxInventoryCust, inventory);
+            }
+            // Warn user if a commma i found
+            else if (doesTbxContainComma([tbxSearch])) 
+            {
+                valid = false;
+                MessageBox.Show("Please remove any commas from your search term.", "Comma found.");
+            }
+            // Update shown items.
+            if (valid)
+            {
+                List<Dictionary<string, dynamic>> results = searchItem(inventory, tbxSearch.Text.Trim());
+                populateListbox(lbxInventoryCust, results);
             }
         }
     }
