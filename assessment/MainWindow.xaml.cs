@@ -32,6 +32,9 @@ namespace assessment
         // Create empty list of all inventory items
         public List<Dictionary<string, dynamic>> inventory = new List<Dictionary<string, dynamic>>(); // Background list for item information
 
+        // Create empty list of all cart items
+        public List<Dictionary<string, dynamic>> cart = new List<Dictionary<string, dynamic>>(); // Background list for item information
+
         // TextBox validation - if empty, return true, else return false
         public bool isTbxEmpty(List<TextBox> checklist) // Takes a list of textbox objects as input
         {
@@ -65,7 +68,7 @@ namespace assessment
         }
 
         // Fill listboxes
-        public void populateListbox(ListBox list, List<Dictionary<string,dynamic>> itemList)
+        public void populateListbox(ListBox list, List<Dictionary<string, dynamic>> itemList)
         {
             // Refresh
             list.Items.Clear();
@@ -251,7 +254,7 @@ namespace assessment
         }
 
         // Search for item on customer page
-        public static List<Dictionary<string, dynamic>> searchItem(List<Dictionary<string, dynamic>> list, string searchString)
+        public List<Dictionary<string, dynamic>> searchItem(List<Dictionary<string, dynamic>> list, string searchString)
         {
             return list.Where(itemInList).ToList();
 
@@ -417,6 +420,37 @@ namespace assessment
                 List<Dictionary<string, dynamic>> results = searchItem(inventory, tbxSearch.Text.Trim());
                 populateListbox(lbxInventoryCust, results);
             }
+        }
+
+        // FIX THIS SHIT
+        // Add selected item to checkout, update quantity
+        private void btnAddCart_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbxInventoryCust.SelectedIndex != -1)
+            {
+                int selectedIndex = lbxInventoryCust.SelectedIndex;
+                var item = inventory[lbxInventoryCust.SelectedIndex];
+                bool correct = false;
+                int selected = 0;
+                while (!correct)
+                {
+                    if (item["ID"] == inventory[selected]["ID"])
+                    {
+                        correct = true;
+                        item = inventory[selected];
+                    }
+                    else
+                    {
+                        correct = false;
+                        selected += 1;
+                    }
+                }
+                if (correct)
+                {
+                    lbxCart.Items.Add($"{item["Name"]}, {item["Price"]}");
+                }
+            }
+            
         }
     }
 }
