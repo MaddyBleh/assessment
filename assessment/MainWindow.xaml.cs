@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection.PortableExecutable;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -65,6 +67,24 @@ namespace assessment
                 }
             }
             return comma;
+        }
+
+        // TextBox validation - if ID already exists in system, return true, else return false
+        public bool doesIdExist(TextBox textBox, List<Dictionary<string, dynamic>> itemList)
+        { 
+            // Get textbox text
+            string text = textBox.Text.Trim();
+            bool exists = false;
+
+            // Loop through entire itemList
+            foreach (var dict in itemList)
+            {
+                if (text == dict["ID"])
+                {
+                    exists = true;
+                }
+            }
+            return exists;
         }
 
         // Fill listboxes
@@ -294,6 +314,14 @@ namespace assessment
                 valid = false;
             }
 
+            // Does the chosen ID already exist in the system?
+            bool idExists = doesIdExist(tbxProductID, inventory);
+            if (idExists)
+            {
+                MessageBox.Show("A product with ID already exists, please change the ID.", "ID Already Exists.");
+                valid = false;
+            }
+
             // If everything is correct, add to lbxInventorySP
             if (valid)
             {
@@ -447,7 +475,7 @@ namespace assessment
                 }
                 if (correct)
                 {
-                    lbxCart.Items.Add($"{item["Name"]}, {item["Price"]}");
+                    lbxCart.Items.Add($"{item["Name"]}, ${item["Price"]}");
                 }
             }
             
