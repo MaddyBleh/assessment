@@ -316,10 +316,13 @@ namespace assessment
 
             // Does the chosen ID already exist in the system?
             bool idExists = doesIdExist(tbxProductID, inventory);
-            if (idExists)
-            {
-                MessageBox.Show("A product with ID already exists, please change the ID.", "ID Already Exists.");
-                valid = false;
+            if (lbxInventorySP.SelectedIndex == -1) 
+            { 
+                if (idExists)
+                {
+                    MessageBox.Show("A product with ID already exists, please change the ID.", "ID Already Exists.");
+                    valid = false;
+                }
             }
 
             // If everything is correct, add to lbxInventorySP
@@ -328,11 +331,17 @@ namespace assessment
                 // If user has selected an item to update
                 if (lbxInventorySP.SelectedIndex != -1)
                 {
-                    var selection = inventory[lbxInventorySP.SelectedIndex];    // Get selected item to edit
-                    selection["ID"] = tbxProductID.Text.Trim();                 // Change ID
-                    selection["Name"] = tbxName.Text.Trim();                    // Change Name
-                    selection["Quantity"] = int.Parse(tbxQuantity.Text);        // Change Quantity
-                    selection["Price"] = double.Parse(tbxPrice.Text);           // Chaange Price
+                    if (idExists)
+                    {
+                        MessageBox.Show("A product with ID already exists, please change the ID.", "ID Already Exists.");
+                    }
+                    else { 
+                        var selection = inventory[lbxInventorySP.SelectedIndex];    // Get selected item to edit
+                        selection["ID"] = tbxProductID.Text.Trim();                 // Change ID
+                        selection["Name"] = tbxName.Text.Trim();                    // Change Name
+                        selection["Quantity"] = int.Parse(tbxQuantity.Text);        // Change Quantity
+                        selection["Price"] = double.Parse(tbxPrice.Text);           // Chaange Price
+                    }
                 }
                 else
                 {
@@ -459,23 +468,39 @@ namespace assessment
                 int selectedIndex = lbxInventoryCust.SelectedIndex;
                 var item = inventory[lbxInventoryCust.SelectedIndex];
                 bool correct = false;
+                
                 int selected = 0;
                 while (!correct)
                 {
                     if (item["ID"] == inventory[selected]["ID"])
                     {
+                        // Pick the selected item
                         correct = true;
                         item = inventory[selected];
                     }
                     else
                     {
+                        // Look at the next item in the list
                         correct = false;
                         selected += 1;
                     }
                 }
                 if (correct)
                 {
-                    lbxCart.Items.Add($"{item["Name"]}, ${item["Price"]}");
+                    if (item["Quantity"] == 0)
+                    {
+                        MessageBox.Show("This item is currently out of stock, please select another item.", "Item out of stock");
+                    }
+                    else 
+                    { 
+                        // Show item in cart
+                        lbxCart.Items.Add($"{item["Name"]}, ${item["Price"]}");
+                    
+                        // Remove 1 from quantity
+                        item["Quantity"] -= 1;
+                        populateListbox(lbxInventoryCust, inventory);
+                        populateListbox(lbxInventorySP, inventory);
+                    }
                 }
             }
             
