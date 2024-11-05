@@ -56,7 +56,7 @@
                     <!--Buttons-->
                     <Button x:Name="btnViewProducts" Content="View all Products" HorizontalAlignment="Left" Height="33" Margin="19,325,0,0" VerticalAlignment="Top" Width="230" FontSize="17" Click="btnViewProducts_Click"/>
                     <Button x:Name="btnAddCart" Content="Add Selection to Cart" HorizontalAlignment="Left" Height="33" Margin="265,325,0,0" VerticalAlignment="Top" Width="230" FontSize="17" Click="btnAddCart_Click"/>
-                    <Button x:Name="btnProceed" Content="Proceed to Checkout" HorizontalAlignment="Left" Height="33" Margin="516,325,0,0" VerticalAlignment="Top" Width="256" FontSize="17"/>
+                    <Button x:Name="btnProceed" Content="Proceed to Checkout" HorizontalAlignment="Left" Height="33" Margin="516,325,0,0" VerticalAlignment="Top" Width="256" FontSize="17" Click="btnProceed_Click"/>
                     <Button x:Name="btnClearCart" Content="Remove Item" HorizontalAlignment="Left" Height="33" Margin="656,268,0,0" VerticalAlignment="Top" Width="116" FontSize="17" Click="btnClearCart_Click"/>
                 </Grid>
             </TabItem>
