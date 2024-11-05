@@ -41,9 +41,9 @@
                     <!--Labels-->
                     <Label x:Name="lblSearch" Content="Search for Product" HorizontalAlignment="Left" Margin="19,20,0,0" VerticalAlignment="Top" Width="153" Height="33" FontSize="17"/>
                     <Label x:Name="lblTotalTitle" Content="Total Items" HorizontalAlignment="Left" Height="28" Margin="656,61,0,0" VerticalAlignment="Top" Width="104" FontWeight="Bold"/>
-                    <Label x:Name="lblTotalView" Content="placeholder number" HorizontalAlignment="Left" Height="28" Margin="656,94,0,0" VerticalAlignment="Top" Width="116"/>
+                    <Label x:Name="lblTotalView" Content="0" HorizontalAlignment="Left" Height="28" Margin="656,94,0,0" VerticalAlignment="Top" Width="116"/>
                     <Label x:Name="lblCostTitle" Content="Total Cost" HorizontalAlignment="Left" Height="28" Margin="656,162,0,0" VerticalAlignment="Top" Width="104" FontWeight="Bold"/>
-                    <Label x:Name="lblCostView" Content="placeholder price" HorizontalAlignment="Left" Height="28" Margin="656,195,0,0" VerticalAlignment="Top" Width="116"/>
+                    <Label x:Name="lblCostView" Content="$0.00" HorizontalAlignment="Left" Height="28" Margin="656,195,0,0" VerticalAlignment="Top" Width="116"/>
                     <Label x:Name="lblCart" Content="Cart" HorizontalAlignment="Left" Margin="560,20,0,0" VerticalAlignment="Top" Width="40" Height="33" FontSize="17"/>
 
                     <!--Input Textbox-->
@@ -57,7 +57,7 @@
                     <Button x:Name="btnViewProducts" Content="View all Products" HorizontalAlignment="Left" Height="33" Margin="19,325,0,0" VerticalAlignment="Top" Width="230" FontSize="17" Click="btnViewProducts_Click"/>
                     <Button x:Name="btnAddCart" Content="Add Selection to Cart" HorizontalAlignment="Left" Height="33" Margin="265,325,0,0" VerticalAlignment="Top" Width="230" FontSize="17" Click="btnAddCart_Click"/>
                     <Button x:Name="btnProceed" Content="Proceed to Checkout" HorizontalAlignment="Left" Height="33" Margin="516,325,0,0" VerticalAlignment="Top" Width="256" FontSize="17"/>
-                    <Button x:Name="btnClearCart" Content="Remove Item" HorizontalAlignment="Left" Height="33" Margin="656,268,0,0" VerticalAlignment="Top" Width="116" FontSize="17"/>
+                    <Button x:Name="btnClearCart" Content="Remove Item" HorizontalAlignment="Left" Height="33" Margin="656,268,0,0" VerticalAlignment="Top" Width="116" FontSize="17" Click="btnClearCart_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Checkout">

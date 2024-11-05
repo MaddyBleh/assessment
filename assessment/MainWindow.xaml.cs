@@ -37,6 +37,9 @@ namespace assessment
         // Create empty list of all cart items
         public List<Dictionary<string, dynamic>> cart = new List<Dictionary<string, dynamic>>(); // Background list for item information
 
+        // Original list of items
+        public List<Dictionary<string, dynamic>> ogList = new List<Dictionary<string, dynamic>>(); // item storage list, but untouched.
+
         // TextBox validation - if empty, return true, else return false
         public bool isTbxEmpty(List<TextBox> checklist) // Takes a list of textbox objects as input
         {
@@ -93,15 +96,31 @@ namespace assessment
             // Refresh
             list.Items.Clear();
 
-            // If there is 1 or more item in inventory
+            // If there is 1 or more item in list
             if (itemList.Count > 0)
             {
 
-                // Loop through each item in inventory
+                // Loop through each item in list
                 foreach (var dict in itemList)
                 {
                     // Display in listbox
                     list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: ${dict["Price"]:N2}"); // Price is 2dp
+                }
+            }
+        }
+
+        // Populate cart. (reworked populateListbox)
+        public void populateCart(ListBox list, List<Dictionary<string, dynamic>> itemList)
+        {
+            // Clear
+            list.Items.Clear();
+
+            if (itemList.Count > 0)
+            {
+                foreach (var dict in itemList)
+                {
+                    // DIsplay items
+                    list.Items.Add($"{dict["Name"]}, ${dict["Price"]:N2}");
                 }
             }
         }
@@ -255,12 +274,14 @@ namespace assessment
                                     item.Add(headers[i], details[i]);
                                 }
                             }
-                            // Add the newly created item into inventory
+                            // Add the newly created item into inventory and original list
                             inventory.Add(item);
+                            ogList.Add(item);
                         }
 
                         // print size of inventory, debug
-                        Trace.WriteLine($"Amount of items in inventory: {inventory.Count}");
+                        MessageBox.Show($"Amount of items in inventory: {inventory.Count}");
+                        MessageBox.Show($"Amount of items in ogList: {ogList.Count}");
 
                     }
                 }
@@ -283,6 +304,22 @@ namespace assessment
                 string search = searchString.ToLower();
                 return dict.ContainsKey("Name") && dict["Name"].ToString().ToLower().Contains(search);
             }
+        }
+
+        // Update lblTotalView
+        public void totalCartUpd()
+        {
+            // Get total cost of cart
+            double sumPrice = 0;
+            foreach (var item in cart)
+            {
+                sumPrice += item["Price"];
+            }
+
+            // Update cart info labels
+            lblTotalView.Content = $"{cart.Count}";
+            lblCostView.Content = $"${sumPrice:N2}";
+
         }
 
         // Add item to inventory - sales page
@@ -330,27 +367,34 @@ namespace assessment
             {
                 // If user has selected an item to update
                 if (lbxInventorySP.SelectedIndex != -1)
-                {
-                    if (idExists)
-                    {
-                        MessageBox.Show("A product with ID already exists, please change the ID.", "ID Already Exists.");
-                    }
-                    else { 
-                        var selection = inventory[lbxInventorySP.SelectedIndex];    // Get selected item to edit
-                        selection["ID"] = tbxProductID.Text.Trim();                 // Change ID
-                        selection["Name"] = tbxName.Text.Trim();                    // Change Name
-                        selection["Quantity"] = int.Parse(tbxQuantity.Text);        // Change Quantity
-                        selection["Price"] = double.Parse(tbxPrice.Text);           // Chaange Price
-                    }
+                { 
+                    var selection = inventory[lbxInventorySP.SelectedIndex];    // Get selected item to edit
+                    selection["ID"] = tbxProductID.Text.Trim();                 // Change ID
+                    selection["Name"] = tbxName.Text.Trim();                    // Change Name
+                    selection["Quantity"] = int.Parse(tbxQuantity.Text);        // Change Quantity
+                    selection["Price"] = double.Parse(tbxPrice.Text);           // Change Price
+
+                    var ogListSelection = inventory[lbxInventorySP.SelectedIndex];    // Get selected item to edit
+                    ogListSelection["ID"] = tbxProductID.Text.Trim();                 // Change ID
+                    ogListSelection["Name"] = tbxName.Text.Trim();                    // Change Name
+                    ogListSelection["Quantity"] = int.Parse(tbxQuantity.Text);        // Change Quantity
+                    ogListSelection["Price"] = double.Parse(tbxPrice.Text);           // Change Price
                 }
                 else
                 {
                     // Add to background list for editting later.
                     inventory.Add(new Dictionary<string, dynamic>());
-                    inventory[lbxInventorySP.Items.Count].Add("ID", tbxProductID.Text.Trim());            // Add ID, remove extra spaces
-                    inventory[lbxInventorySP.Items.Count].Add("Name", tbxName.Text.Trim());               // Add Name, remove extra spaces
-                    inventory[lbxInventorySP.Items.Count].Add("Quantity", int.Parse(tbxQuantity.Text));   // Add Quantity
+                    inventory[lbxInventorySP.Items.Count].Add("ID", new string(tbxProductID.Text.Trim()));            // Add ID, remove extra spaces
+                    inventory[lbxInventorySP.Items.Count].Add("Name", new string(tbxName.Text.Trim()));               // Add Name, remove extra spaces
+                    inventory[lbxInventorySP.Items.Count].Add("Quantity", Convert.ToInt32(tbxQuantity.Text));   // Add Quantity
                     inventory[lbxInventorySP.Items.Count].Add("Price", double.Parse(tbxPrice.Text));      // Add Price
+
+                    // Also add to ogList
+                    ogList.Add(new Dictionary<string, dynamic>());
+                    ogList[lbxInventorySP.Items.Count].Add("ID", new string(tbxProductID.Text.Trim()));            // Add ID, remove extra spaces
+                    ogList[lbxInventorySP.Items.Count].Add("Name", new string(tbxName.Text.Trim()));               // Add Name, remove extra spaces
+                    ogList[lbxInventorySP.Items.Count].Add("Quantity", Convert.ToInt32(tbxQuantity.Text));   // Add Quantity
+                    ogList[lbxInventorySP.Items.Count].Add("Price", double.Parse(tbxPrice.Text));      // Add Price
                 }
 
                 // Add to / update listbox
@@ -492,18 +536,81 @@ namespace assessment
                         MessageBox.Show("This item is currently out of stock, please select another item.", "Item out of stock");
                     }
                     else 
-                    { 
+                    {
+                        // Add item to cart list
+                        cart.Add(new Dictionary<string, dynamic>());
+                        cart[lbxCart.Items.Count].Add("ID", item["ID"]);
+                        cart[lbxCart.Items.Count].Add("Name", item["Name"]);
+                        cart[lbxCart.Items.Count].Add("Price", item["Price"]);
+
                         // Show item in cart
-                        lbxCart.Items.Add($"{item["Name"]}, ${item["Price"]}");
-                    
+                        populateCart(lbxCart, cart);
+
                         // Remove 1 from quantity
                         item["Quantity"] -= 1;
                         populateListbox(lbxInventoryCust, inventory);
                         populateListbox(lbxInventorySP, inventory);
+
+                        totalCartUpd();
                     }
                 }
             }
-            
+        }
+
+        private void btnClearCart_Click(object sender, RoutedEventArgs e)
+        {
+            // Find selected item
+            int selectedIndex = lbxCart.SelectedIndex;
+
+            // If an item is selected
+            if (selectedIndex != -1)
+            {
+                // Remove selected item
+                string ID = cart[selectedIndex]["ID"];
+                cart.RemoveAt(selectedIndex);
+
+                // Add quantity back
+                int invID = 0;
+                while (ID != inventory[invID]["ID"])
+                {
+                    invID ++;
+                }
+                inventory[invID]["Quantity"] += 1;
+                populateCart(lbxCart, cart);
+                populateListbox(lbxInventoryCust, inventory);
+                populateListbox(lbxInventorySP, inventory);
+            }
+            // If nothing is selected
+            else
+            {
+                // Clear all items from cart list, reload
+                cart.Clear();
+                lbxInventoryCust.Items.Clear();
+                lbxInventorySP.Items.Clear();
+                populateCart(lbxCart, cart);
+
+                for (int i = 0; i < inventory.Count; i++)
+                {
+                    inventory[i]["Quantity"] = ogList[i]["Quantity"];
+                    MessageBox.Show($"inventory: {inventory[i]["Quantity"]} | ogList: {ogList[i]["Quantity"]}");
+                    MessageBox.Show($"ran this loop {i + 1} times");
+                }
+
+                populateListbox(lbxInventoryCust, ogList);
+                populateListbox(lbxInventorySP, ogList);
+                for (var i = 0; i < lbxInventoryCust.Items.Count; i++)
+                {
+                    MessageBox.Show($"Item {i}: {lbxInventoryCust.Items[i]}");
+                }
+                foreach (var item in ogList)
+                {
+                    MessageBox.Show($"{item["Name"]}: {item["Quantity"]}");
+                }
+                MessageBox.Show("reloaded oglist.");
+            }
+
+            // Update labels
+            totalCartUpd();
         }
     }
 }
