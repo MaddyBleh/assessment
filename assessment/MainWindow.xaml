@@ -70,14 +70,19 @@
                     <Label x:Name="lblAddress" Content="Address" HorizontalAlignment="Left" Height="33" Margin="19,251,0,0" VerticalAlignment="Top" Width="164" FontSize="17"/>
 
                     <!--TextBoxes-->
-                    <TextBox x:Name="tbxNameCust" HorizontalAlignment="Left" Margin="183,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
-                    <TextBox x:Name="tbxPhoneNum" HorizontalAlignment="Left" Margin="183,97,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
-                    <TextBox x:Name="tbxEmail" HorizontalAlignment="Left" Margin="183,174,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
-                    <TextBox x:Name="tbxAddress" HorizontalAlignment="Left" Margin="183,251,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="17"/>
+                    <TextBox x:Name="tbxNameCust" HorizontalAlignment="Left" Margin="183,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="15"/>
+                    <TextBox x:Name="tbxPhoneNum" HorizontalAlignment="Left" Margin="183,97,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="15"/>
+                    <TextBox x:Name="tbxEmail" HorizontalAlignment="Left" Margin="183,174,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="15"/>
+                    <TextBox x:Name="tbxAddress" HorizontalAlignment="Left" Margin="183,251,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Height="33" FontSize="15"/>
 
                     <!--Buttons-->
-                    <Button x:Name="btnCheckout" Content="Checkout" HorizontalAlignment="Left" Margin="19,321,0,0" VerticalAlignment="Top" Height="43" Width="364" FontSize="20"/>
+                    <Button x:Name="btnCheckout" Content="Checkout" HorizontalAlignment="Left" Margin="19,321,0,0" VerticalAlignment="Top" Height="43" Width="364" FontSize="20" Click="btnCheckout_Click"/>
+                    <Button x:Name="btnSaveReceipt" Content="Save Receipt" HorizontalAlignment="Left" Margin="408,321,0,0" VerticalAlignment="Top" Height="43" Width="364" FontSize="20" Click="btnSaveReceipt_Click"/>
 
+                    <!--Receipt Area-->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  HorizontalAlignment="Left" Height="264" Margin="397,20,0,0" VerticalAlignment="Top" Width="387">
+                        <TextBlock x:Name="txtblkReceipt" TextWrapping="Wrap" FontSize="17" Text=""/>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

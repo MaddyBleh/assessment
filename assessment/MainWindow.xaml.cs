@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -162,6 +163,7 @@ namespace assessment
                 savetocsv.Title = "Save your file";
                 savetocsv.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
                 savetocsv.DefaultExt = "csv";
+                savetocsv.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
                 if (savetocsv.ShowDialog() == true)
                 {
@@ -226,7 +228,7 @@ namespace assessment
             loadfromcsv.Title = "Load your file";
             loadfromcsv.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
             loadfromcsv.FilterIndex = 0;
-
+            loadfromcsv.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             // If a dialog box appears
             if (loadfromcsv.ShowDialog() == true)
             {
@@ -623,6 +625,107 @@ namespace assessment
             else
             {
                 MessageBox.Show("Please add items into your cart to proceed.", "Empty cart");
+            }
+        }
+
+        private void generateReceipt()
+        {
+            // Get user information
+            string userName = tbxNameCust.Text;
+            string userPhone = tbxPhoneNum.Text;
+            string userEmail = tbxEmail.Text;
+            string userAddress = tbxAddress.Text;
+
+            // Get cart information
+            int cartTotalItems = cart.Count();
+            double cartTotalPrice = 0;
+            foreach (var item in cart)
+            {
+                cartTotalPrice += item["Price"];
+            }
+
+            // Generate receipt
+            StringBuilder receipt = new StringBuilder();
+            receipt.AppendLine("---------------");
+            receipt.AppendLine($"Name: {userName}");
+            receipt.AppendLine($"Phone: {userPhone}");
+            receipt.AppendLine($"Email: {userEmail}");
+            receipt.AppendLine($"Address: {userAddress}");
+            receipt.AppendLine("---------------");
+
+            receipt.AppendLine("Items");
+            foreach (var item in cart)
+            {
+                receipt.AppendLine($"{item["Name"]} - {item["Price"]}");
+            }
+
+            receipt.AppendLine("---------------");
+            receipt.AppendLine($"Total Items: {cartTotalItems}");
+            receipt.AppendLine($"Total Price: {cartTotalPrice:N2}");
+
+            // Display in txtblk
+            txtblkReceipt.Text = receipt.ToString();
+
+        }
+        private void btnCheckout_Click(object sender, RoutedEventArgs e)
+        {
+            bool userInputs = isTbxEmpty([tbxNameCust, tbxPhoneNum, tbxEmail, tbxAddress]);
+            if (userInputs == true) // If textboxes are empty
+            {
+                MessageBox.Show("Please make sure that all your information is filled out. Check for any blank boxes, or boxes with only spaces.");
+            }
+            else
+            {
+                generateReceipt();
+            }
+        }
+
+        // Save Receipt to .txt
+        private void SaveReceiptToFile()
+        {
+            // Generate filename with date and time
+            string timestamp = DateTime.Now.ToString("dd-MM-yyyy HH-mm");
+            string defaultFileName = $"Receipt - {timestamp}.txt";
+
+            // Create and configure SaveFileDialog
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                FileName = defaultFileName,
+                DefaultExt = ".txt",
+                Filter = "Text documents (.txt)|*.txt",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            };
+
+            // Show the dialog and save if the user clicks "Save"
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                // Get the text from txtblkReceipt
+                string receiptText = txtblkReceipt.Text;
+
+                try
+                {
+                    // Save the receipt text to the selected file
+                    File.WriteAllText(saveFileDialog.FileName, receiptText);
+                    MessageBox.Show($"Receipt saved as {saveFileDialog.FileName}", "Success");
+                }
+                catch (Exception ex)
+                {
+                    // Handle any errors that may occur during file writing
+                    MessageBox.Show($"Error saving file: {ex.Message}", "Error");
+                }
+            }
+        }
+
+        // Save Receipt button
+        private void btnSaveReceipt_Click(object sender, RoutedEventArgs e)
+        {
+            if (txtblkReceipt.Text.Length > 0)
+            { 
+                SaveReceiptToFile();
+            }
+            else
+            {
+                MessageBox.Show("Please make sure you have generated a receipt before clicking this!", "No receipt generated.");
             }
         }
     }
