@@ -40,8 +40,8 @@ namespace assessment
         // Original list of items
         public List<Dictionary<string, dynamic>> ogList = new List<Dictionary<string, dynamic>>(); // item storage list, but untouched.
 
-    // TextBox validation - if empty, return true, else return false
-    public bool isTbxEmpty(List<TextBox> checklist) // Takes a list of textbox objects as input
+        // TextBox validation - if empty, return true, else return false
+        public bool isTbxEmpty(List<TextBox> checklist) // Takes a list of textbox objects as input
         {
             bool empty = false;
             for (int i = 0; i < checklist.Count; i++)
@@ -74,7 +74,7 @@ namespace assessment
 
         // TextBox validation - if ID already exists in system, return true, else return false
         public bool doesIdExist(TextBox textBox, List<Dictionary<string, dynamic>> itemList)
-        { 
+        {
             // Get textbox text
             string text = textBox.Text.Trim();
             bool exists = false;
@@ -104,7 +104,7 @@ namespace assessment
                 foreach (var dict in itemList)
                 {
                     // Display in listbox
-                    list.Items.Add($"ID: {dict["ID"]}, Name: {dict["Name"]}, Quantity: {dict["Quantity"]}, Price: ${dict["Price"]:N2}"); // Price is 2dp
+                    list.Items.Add(InvItemToString(dict)); // Price is 2dp
                 }
             }
         }
@@ -251,7 +251,8 @@ namespace assessment
 
                             // Create item dictionary - will be added to inventory
                             Dictionary<string, dynamic> item = new Dictionary<string, dynamic>();
-                            if (details.Length != headers.Length) {
+                            if (details.Length != headers.Length)
+                            {
                                 Trace.WriteLine("Skipping invalid line.");
                                 continue;
                             }
@@ -351,14 +352,14 @@ namespace assessment
             bool commacheck = doesTbxContainComma([tbxProductID, tbxName, tbxQuantity, tbxPrice]);
             if (commacheck)
             {
-                MessageBox.Show("Please remove any commas from your textboxes.","Comma found in textbox.");
+                MessageBox.Show("Please remove any commas from your textboxes.", "Comma found in textbox.");
                 valid = false;
             }
 
             // Does the chosen ID already exist in the system?
             bool idExists = doesIdExist(tbxProductID, inventory);
-            if (lbxInventorySP.SelectedIndex == -1) 
-            { 
+            if (lbxInventorySP.SelectedIndex == -1)
+            {
                 if (idExists)
                 {
                     MessageBox.Show("A product with ID already exists, please change the ID.", "ID Already Exists.");
@@ -371,7 +372,7 @@ namespace assessment
             {
                 // If user has selected an item to update
                 if (lbxInventorySP.SelectedIndex != -1)
-                { 
+                {
                     var selection = inventory[lbxInventorySP.SelectedIndex];    // Get selected item to edit
                     selection["ID"] = tbxProductID.Text.Trim();                 // Change ID
                     selection["Name"] = tbxName.Text.Trim();                    // Change Name
@@ -490,7 +491,7 @@ namespace assessment
                 populateListbox(lbxInventoryCust, inventory);
             }
             // Warn user if a commma i found
-            else if (doesTbxContainComma([tbxSearch])) 
+            else if (doesTbxContainComma([tbxSearch]))
             {
                 valid = false;
                 MessageBox.Show("Please remove any commas from your search term.", "Comma found.");
@@ -503,51 +504,57 @@ namespace assessment
             }
         }
 
-        // FIX THIS SHIT
+        // Convert item data into string for formatting reasons
+        private string InvItemToString(Dictionary<string, dynamic> invitem)
+        {
+            return $"ID: {invitem["ID"]}, Name: {invitem["Name"]}, Quantity: {invitem["Quantity"]}, Price: ${invitem["Price"]:N2}";
+        }
+
         // Add selected item to checkout, update quantity
         private void btnAddCart_Click(object sender, RoutedEventArgs e)
         {
             if (lbxInventoryCust.SelectedIndex != -1)
             {
-                int selectedIndex = lbxInventoryCust.SelectedIndex;
-                var item = inventory[selectedIndex];
-                bool correct = false;
-                
-                int selected = 0;
-                while (!correct)
+
+                // Get item information from listbox
+                var listitem = lbxInventoryCust.SelectedItem as string;
+
+                // Search for item in inventory, store for usage later
+                dynamic selitem = null;
+                foreach (var invitem in inventory)
                 {
-                    if (item["ID"] == inventory[selected]["ID"])
+                    if (listitem == InvItemToString(invitem))
                     {
-                        // Pick the selected item
-                        correct = true;
-                        item = inventory[selected];
-                    }
-                    else
-                    {
-                        // Look at the next item in the list
-                        correct = false;
-                        selected += 1;
+                        selitem = invitem;
+                        break;
                     }
                 }
-                if (correct)
+
+                /// If item from inventory is found. ..
+                /// Also means that if an item which isnt in the list
+                /// is found (which should never happen), the code doesnt
+                /// kill itself.
+
+                if (selitem != null)
                 {
-                    if (item["Quantity"] == 0)
+                    // Check if in stock
+                    if (selitem["Quantity"] == 0)
                     {
                         MessageBox.Show("This item is currently out of stock, please select another item.", "Item out of stock");
                     }
-                    else 
+                    else
                     {
                         // Add item to cart list
                         cart.Add(new Dictionary<string, dynamic>());
-                        cart[lbxCart.Items.Count].Add("ID", item["ID"]);
-                        cart[lbxCart.Items.Count].Add("Name", item["Name"]);
-                        cart[lbxCart.Items.Count].Add("Price", item["Price"]);
+                        cart[lbxCart.Items.Count].Add("ID", selitem["ID"]);
+                        cart[lbxCart.Items.Count].Add("Name", selitem["Name"]);
+                        cart[lbxCart.Items.Count].Add("Price", selitem["Price"]);
 
                         // Show item in cart
                         populateCart(lbxCart, cart);
 
                         // Remove 1 from quantity
-                        item["Quantity"] -= 1;
+                        selitem["Quantity"] -= 1;
                         populateListbox(lbxInventoryCust, inventory);
                         populateListbox(lbxInventorySP, inventory);
 
@@ -573,7 +580,7 @@ namespace assessment
                 int invID = 0;
                 while (ID != inventory[invID]["ID"])
                 {
-                    invID ++;
+                    invID++;
                 }
                 inventory[invID]["Quantity"] += 1;
                 populateCart(lbxCart, cart);
@@ -585,7 +592,7 @@ namespace assessment
             {
                 // Clear all items from cart list, reload
                 cart.Clear();
-                
+
                 // Reset quantities
                 for (int i = 0; i < inventory.Count; i++)
                 {
@@ -596,7 +603,7 @@ namespace assessment
                 lbxInventorySP.Items.Clear();
                 populateCart(lbxCart, cart);
 
-                
+
                 populateListbox(lbxInventoryCust, ogList);
                 populateListbox(lbxInventorySP, ogList);
             }
